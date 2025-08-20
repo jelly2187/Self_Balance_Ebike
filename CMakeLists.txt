@@ -49,6 +49,7 @@ file(GLOB_RECURSE SOURCES
         "USER/BSP/Src/*.c"
         "User/Devices/Src/*.c"
         "User/utils/Src/*.c"
+        "User/Algorithms/Src/*.c"
         #        "USER/Components/Algorithm/Src/*.c"
         #        "USER/Components/Controller/Src/*.c"
         #        "USER/Application/Task/Src/*.c"
@@ -66,6 +67,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         User/Devices/Inc
         User/utils/Inc
         User/BSP/Inc
+        User/Algorithms/Inc
 )
 
 # Add project symbols (macros)
@@ -86,4 +88,10 @@ add_custom_command(
         COMMENT "Generating hex file for STM32"
 )
 
+# 启用硬件浮点运算
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
+
+# 支持 printf 浮点数输出
+target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -u _printf_float)
 set(COMMON_FLAGS "-specs=nosys.specs -specs=nano.specs -u _printf_float -u _scanf_float")

@@ -18,8 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fdcan.h"
 #include "memorymap.h"
 #include "spi.h"
+#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -27,6 +29,7 @@
 /* USER CODE BEGIN Includes */
 #include "bsp_sbus.h"
 #include "at9s_pro.h"
+#include "DJI_Motor.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,11 +100,16 @@ int main(void) {
     MX_UART5_Init();
     MX_USART1_UART_Init();
     MX_SPI6_Init();
+    MX_FDCAN1_Init();
+    MX_TIM2_Init();
     /* USER CODE BEGIN 2 */
     RetargetInit(&huart1);
 
     HAL_UART_Receive_IT(&huart5, at9s_rx, 1); // remote control data receive interrupt
+    DJI_Motor_Init();
+    PID_Init(&dji_motor_speed_pid, 4.f, 0.0f, 0.00f, 10000.0f, 5000.0f);
 
+    HAL_TIM_Base_Start_IT(&htim2);
     printf("SYSTEM START!!!!!\r\n");
     /* USER CODE END 2 */
 
@@ -111,15 +119,20 @@ int main(void) {
         // printf("hello\r\n");
         // HAL_Delay(500);
         Remote_Control_Update();
+        // printf("Target: %.2f RPM, Actual: %d RPM, PID_Output: %.0f\r\n",
+        //        dji_target_speed_rpm,
+        //        motor_feedback[0].speed_rpm,
+        //        dji_motor_speed_pid.output);
+        // printf("T1=%.0f,A1=%d\r\n", dji_target_speed_rpm, motor_feedback[0].speed_rpm);
 
-
+        HAL_Delay(200); // 降低打印频率
     }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-}
 
-/* USER CODE END 3 */
+
+    /* USER CODE END 3 */
 }
 
 /**
@@ -136,7 +149,7 @@ void SystemClock_Config(void) {
 
     /** Configure the main internal regulator output voltage
     */
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
+    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
     while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {
     }
@@ -148,12 +161,12 @@ void SystemClock_Config(void) {
     RCC_OscInitStruct.HSEState = RCC_HSE_ON;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 2;
-    RCC_OscInitStruct.PLL.PLLN = 40;
+    RCC_OscInitStruct.PLL.PLLM = 6;
+    RCC_OscInitStruct.PLL.PLLN = 160;
     RCC_OscInitStruct.PLL.PLLP = 1;
     RCC_OscInitStruct.PLL.PLLQ = 2;
     RCC_OscInitStruct.PLL.PLLR = 2;
-    RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_3;
+    RCC_OscInitStruct.PLL.PLLRGE = RCC_PLL1VCIRANGE_2;
     RCC_OscInitStruct.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE;
     RCC_OscInitStruct.PLL.PLLFRACN = 0;
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
@@ -167,13 +180,13 @@ void SystemClock_Config(void) {
                                   | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
     RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
     RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV4;
     RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
     RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
     RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
     RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_3) != HAL_OK) {
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
         Error_Handler();
     }
 }
