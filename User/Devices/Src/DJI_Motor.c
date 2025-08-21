@@ -109,3 +109,8 @@ void DJI_Motor_ParseFeedback(uint32_t can_id, uint8_t *data)
         //        motor_feedback[0].temperature);
     }
 }
+
+void Set_Bicycle_Speed(float speed_rpm)
+{
+    //todo: 车速与电机速度对应
+}
