@@ -75,9 +75,13 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         # Add user defined symbols
 )
 
+target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
+        DSP
+)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
         stm32cubemx
+        arm_cortexM7lfdp_math
 
         # Add user defined libraries
 )
@@ -95,3 +99,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpu=fpv4-sp-d16 -mfloat-abi=hard")
 # 支持 printf 浮点数输出
 target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -u _printf_float)
 set(COMMON_FLAGS "-specs=nosys.specs -specs=nano.specs -u _printf_float -u _scanf_float")
+
+# 设置编译器选项
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mfloat-abi=hard -mfpu=fpv5-d16")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfloat-abi=hard -mfpu=fpv5-d16")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -mfloat-abi=hard -mfpu=fpv5-d16")
+
+# 可选：如果需要使用DSP库
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mthumb -mthumb-interwork -march=armv7e-m -mtune=cortex-m7")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mthumb -mthumb-interwork -march=armv7e-m -mtune=cortex-m7")
