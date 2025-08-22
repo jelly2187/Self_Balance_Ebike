@@ -36,7 +36,7 @@ void DM_Motor_init(void) {
 void DM_Motor_Enable(uint16_t motor_id, uint16_t mode_id) {
     uint8_t data[8];
     uint16_t id = motor_id + mode_id;
-    printf("id: %x\r\n", id);
+    // printf("id: %x\r\n", id);
 
     data[0] = 0xFF;
     data[1] = 0xFF;
@@ -97,15 +97,15 @@ uint8_t DM_FDCAN_Send_Data(FDCAN_HandleTypeDef *hfdcan, uint16_t id, uint8_t *da
     pTxHeader.MessageMarker = 0;
 
     if (HAL_FDCAN_AddMessageToTxFifoQ(hfdcan, &pTxHeader, data) != HAL_OK) {
-        printf("FDCAN Send Error\r\n");
+        // printf("FDCAN Send Error\r\n");
         return 1; //发送
     }
-    printf("FDCAN Send Data, ");
-    printf("data is :");
-    for (uint32_t i = 0; i < len; i++) {
-        printf("%02X ", data[i]);
-    }
-    printf("\r\n");
+    // printf("FDCAN Send Data, ");
+    // printf("data is :");
+    // for (uint32_t i = 0; i < len; i++) {
+    //     printf("%02X ", data[i]);
+    // }
+    // printf("\r\n");
     return 0;
 }
 
@@ -133,7 +133,7 @@ void DM_Motor_Pos_Ctrl(FDCAN_HandleTypeDef *hcan, uint16_t motor_id, float pos, 
 
 void DM_Motor_ParseFeedback(uint8_t *rx_data) {
     uint8_t motor_id = rx_data[0] & 0x0F;
-    printf("motor id: %x\r\n", motor_id);
+    // printf("motor id: %x\r\n", motor_id);
     if (motor_id > 0) // 假设ID>0
     {
         dm_motor_feedback[motor_id - 1].id = motor_id;
