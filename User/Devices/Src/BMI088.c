@@ -60,7 +60,7 @@ static void BMI088_Read_Multi_Reg(uint8_t, uint8_t *, uint8_t);
 
 static float BMI088_ACCEL_SEN = BMI088_ACCEL_6G_SEN;
 
-static float BMI088_GYRO_SEN = BMI088_GYRO_2000_SEN;
+float BMI088_GYRO_SEN = BMI088_GYRO_2000_SEN;
 
 BMI088_Info_Typedef BMI088_Info;
 
@@ -222,14 +222,14 @@ static BMI088_Status_e BMI088_Gyro_Init(void)
 #define IMU_Calibration_ENABLE  1U
 
 //todo: IMU零飘校准
-static void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info)
+void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info)
 {
 #if IMU_Calibration_ENABLE /* ENABLE the BMI088 Calibration */
 
 	uint8_t buf[8] = {0,};
 
-  for(uint16_t i = 0; i < 5000; i++)
-  {
+  // for(uint16_t i = 0; i < 5000; i++)
+  // {
     /* read the accelerator multi data */
     BMI088_Accel_Read_Multi_Reg(BMI088_ACCEL_XOUT_L, buf, 6);
     BMI088_Info->MPU_Info.Accel_X = (int16_t)((buf[1]) << 8) | buf[0];
@@ -251,12 +251,12 @@ static void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info)
       BMI088_Info->Offsets_Gyro_Z += BMI088_GYRO_SEN * BMI088_Info->MPU_Info.Gyro_Z;
     }
     /* waiting 1ms */
-    Delay_ms(1);
-  }
+    // Delay_ms(1);
+  // }
 
-  BMI088_Info->Offsets_Gyro_X = BMI088_Info->Offsets_Gyro_X / 5000.f;
-  BMI088_Info->Offsets_Gyro_Y = BMI088_Info->Offsets_Gyro_Y / 5000.f;
-  BMI088_Info->Offsets_Gyro_Z = BMI088_Info->Offsets_Gyro_Z / 5000.f;
+  // BMI088_Info->Offsets_Gyro_X = BMI088_Info->Offsets_Gyro_X / 5000.f;
+  // BMI088_Info->Offsets_Gyro_Y = BMI088_Info->Offsets_Gyro_Y / 5000.f;
+  // BMI088_Info->Offsets_Gyro_Z = BMI088_Info->Offsets_Gyro_Z / 5000.f;
 
 #else /* DISABLE the BMI088 Calibration */
 	/* store the previous offsets */
@@ -269,7 +269,7 @@ static void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info)
 #endif
 
   /* set the offset init flag */
-  BMI088_Info->Offsets_Init = true;
+  // BMI088_Info->Offsets_Init = true;
 }
 
 void BMI088_Init(void)
@@ -288,7 +288,7 @@ void BMI088_Init(void)
 	}while(status);
 
     // BMI088_Info.Offsets_Init = false;
-	BMI088_Offset_Update(&BMI088_Info);
+	// BMI088_Offset_Update(&BMI088_Info);
 
 }
 
