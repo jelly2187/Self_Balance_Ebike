@@ -221,7 +221,7 @@ static BMI088_Status_e BMI088_Gyro_Init(void)
 
 #define IMU_Calibration_ENABLE  1U
 
-//todo: IMU零飘校准
+
 void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info)
 {
 #if IMU_Calibration_ENABLE /* ENABLE the BMI088 Calibration */

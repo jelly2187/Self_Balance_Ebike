@@ -3,12 +3,14 @@
 //
 
 #include "DJI_Motor.h"
-
+#include <math.h>
+#define FRICTION_WHEEL_DIAMETER_METERS (0.063f)
 
 PID_Controller_t dji_motor_speed_pid;
-volatile float dji_target_speed_rpm = 300.0f;
+volatile float dji_target_speed_rpm = -000.0f;
 // 定义电机反馈数据数组
 volatile DJI_Motor_Feedback_t motor_feedback[1];
+
 
 // FDCAN句柄，在main.c中定义
 extern FDCAN_HandleTypeDef hfdcan1;
@@ -110,7 +112,12 @@ void DJI_Motor_ParseFeedback(uint32_t can_id, uint8_t *data)
     }
 }
 
-void Set_Bicycle_Speed(float speed_rpm)
+void Set_Bicycle_Speed(float bicycle_speed_mps)
 {
-    //todo: 车速与电机速度对应
+    dji_target_speed_rpm = (bicycle_speed_mps * 60.0f) / (FRICTION_WHEEL_DIAMETER_METERS * 3.1415926f);
+}
+
+
+float Get_Bicycle_Speed(void) {
+    return (motor_feedback[0].speed_rpm * FRICTION_WHEEL_DIAMETER_METERS * 3.1415926f) / 60.0f;
 }

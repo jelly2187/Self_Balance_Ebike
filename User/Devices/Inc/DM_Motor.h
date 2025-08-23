@@ -51,4 +51,5 @@ static uint16_t float_to_uint(float x, float x_min, float x_max, int bits);
 static float uint_to_float(int x_int, float x_min, float x_max, int bits);
 void write_motor_data(uint16_t id, uint8_t rid, uint8_t d0, uint8_t d1, uint8_t d2, uint8_t d3);
 void save_motor_data(uint16_t id, uint8_t rid);
+void Set_Bicycle_Angle(float angle_rad);
 #endif //BALANCE_EBIKE_DM_MOTOR_H

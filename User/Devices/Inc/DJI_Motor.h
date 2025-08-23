@@ -25,4 +25,7 @@ extern volatile DJI_Motor_Feedback_t motor_feedback[1];
 void DJI_Motor_Init(void);
 void DJI_Motor_SendCommand(int16_t motor1_current);
 void DJI_Motor_ParseFeedback(uint32_t can_id, uint8_t *data);
+
+void Set_Bicycle_Speed(float bicycle_speed_mps);
+float Get_Bicycle_Speed(void);
 #endif //BALANCE_EBIKE_DJI_MOTOR_H

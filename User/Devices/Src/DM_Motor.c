@@ -4,7 +4,7 @@
 
 #include "DM_Motor.h"
 
-volatile float dm_target_position_rad = 0.f;
+volatile float dm_target_position_rad = -0.f;
 volatile DM_Motor_Feedback_t dm_motor_feedback[1];
 
 void DM_Motor_init(void) {
@@ -150,6 +150,9 @@ void DM_Motor_ParseFeedback(uint8_t *rx_data) {
     //todo: DM电机无回传数据，待解决
 }
 
+void Set_Bicycle_Angle(float angle_rad) {
+    dm_target_position_rad = angle_rad;
+}
 
 static uint16_t float_to_uint(float x, float x_min, float x_max, int bits) {
     float span = x_max - x_min;

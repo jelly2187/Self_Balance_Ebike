@@ -54,4 +54,5 @@ INS_State_e INS_Get_State(void);
 
 // --- 声明一个用于获取预热进度的函数，以便在main中打印 ---
 void INS_Get_Preheating_Progress(uint32_t *stable_time_ms);
+void INS_Monitor(void);
 #endif //BALANCE_EBIKE_INS_H

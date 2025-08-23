@@ -36,7 +36,10 @@
 #include "DJI_Motor.h"
 #include "DM_Motor.h"
 #include "INS.h"
+#include "bsp_mcu.h"
 #include "stm32h7xx_hal_fdcan.h"
+#include "ws2812.h"
+#include "remote_control.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -120,20 +123,19 @@ int main(void)
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
     RetargetInit(&huart1);
-
-    BSP_PWM_Init();
-    BSP_GPIO_Init();
-    // BMI088_Init();
-
-    DJI_Motor_Init();
-    Motor_PID_Init(&dji_motor_speed_pid, 4.f, 0.0f, 0.00f, 10000.0f, 5000.0f);
-
-    INS_Init();
-
     HAL_TIM_Base_Start_IT(&htim2);
     HAL_TIM_Base_Start_IT(&htim4);
     HAL_UART_Receive_IT(&huart5, at9s_rx, 1); // remote control data receive interrupt
 
+    // System_On();
+    BSP_PWM_Init();
+    BSP_GPIO_Init();
+
+    DJI_Motor_Init();
+    Motor_PID_Init(&dji_motor_speed_pid, 10.f, 0.75f, 1.0f, 10000.0f, 5000.0f);
+    DM_Motor_init();
+    DM_Motor_Enable(CAN_ID,POS_MODE);
+    INS_Init();
 
     printf("SYSTEM START!!!!!\r\n");
   /* USER CODE END 2 */
@@ -144,30 +146,15 @@ int main(void)
         // printf("hello\r\n");
         // HAL_Delay(500);
         Remote_Control_Update();
-        DM_Motor_Pos_Ctrl(&hfdcan2, CAN_ID, dm_target_position_rad, 2.0f); // 控制DM电机1到2 rad位置，速度1 rad/s
-        INS_State_e current_state = INS_Get_State();
+        Remote_Control_Parse();
+        INS_Monitor();
 
-        switch (current_state) {
-            case INS_STATE_PREHEATING:
-                printf("IMU Preheating... Target: %.1f C, Current: %.2f C\r\n",
-                       TARGET_TEMP, BMI088_Info.Temperature);
-                break;
-            case INS_STATE_GYRO_CALIBRATING:
-                // 打印校准进度
-                printf("Gyro Calibrating... Progress: %d / %d\r\n",
-                       cal_sample_count, GYRO_CAL_SAMPLE_COUNT);
-                break;
-            case INS_STATE_RUNNING:
-                // 校准完成，可以打印姿态数据或零偏数据
-                printf("RUNNING -> Roll:%.2f, Pitch:%.2f, Yaw:%.2f, G_OffsetX: %f\r\n, G_OffsetY: %f, G_OffsetZ: %f\r\n",
-                       INS_Info.Roll_Angle, INS_Info.Pitch_Angle, INS_Info.Yaw_Angle,
-                       BMI088_Info.Offsets_Gyro_X, BMI088_Info.Offsets_Gyro_Y, BMI088_Info.Offsets_Gyro_Z);
-                break;
-            default:
-                break;
-        }
+        DM_Motor_Pos_Ctrl(&hfdcan2, CAN_ID, dm_target_position_rad, 2.f); // 控制DM电机1到2 rad位置，速度1 rad/s
 
-        HAL_Delay(200); // 主循环以较低频率打印状态
+
+        printf("bike_speed=%.2f\r\n", Get_Bicycle_Speed());
+
+        // HAL_Delay(200); // 主循环以较低频率打印状态
         // printf("Roll=%.2f,Pitch=%.2f,Yaw=%.2f\r\n",
         //        INS_Info.Roll_Angle,
         //        INS_Info.Pitch_Angle,
@@ -191,7 +178,7 @@ int main(void)
         //        dm_motor_feedback[0].position,
         //        dm_motor_feedback[0].velocity,
         //        dm_motor_feedback[0].torque);
-        // HAL_Delay(200); // 降低打印频率
+        HAL_Delay(500); // 降低打印频率
     }
     /* USER CODE END WHILE */
 

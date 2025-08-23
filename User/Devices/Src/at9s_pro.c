@@ -4,6 +4,8 @@
 
 #include "at9s_pro.h"
 
+#include "bsp_mcu.h"
+
 uint16_t SBUS_thoroughfare[16] = {0};
 
 void Remote_Control_Update(void) {
@@ -61,7 +63,7 @@ void SBUS_thoroughfare_analysis(int n) {
         printf("end : %4d\r\n", SBUS_data[24]);
         printf("======================================\r\n\r\n");
     }
-
+    printf("%d\r\n", SBUS_thoroughfare[3]);
     //printf("%d\r\n",SBUS_thoroughfare[5]);
     //printf("  %4d, %4d, %4d, %4d\r\n", SBUS_thoroughfare[0], SBUS_thoroughfare[1], SBUS_thoroughfare[2], SBUS_thoroughfare[3]);
 }

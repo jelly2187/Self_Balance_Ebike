@@ -254,3 +254,27 @@ void INS_Get_Preheating_Progress(uint32_t *stable_time_ms)
 {
     *stable_time_ms = stable_temp_counter;
 }
+
+void INS_Monitor(void) {
+    INS_State_e current_state = INS_Get_State();
+
+    switch (current_state) {
+        case INS_STATE_PREHEATING:
+            printf("IMU Preheating... Target: %.1f C, Current: %.2f C\r\n",
+                   TARGET_TEMP, BMI088_Info.Temperature);
+            break;
+        case INS_STATE_GYRO_CALIBRATING:
+            // 打印校准进度
+            printf("Gyro Calibrating... Progress: %d / %d\r\n",
+                   cal_sample_count, GYRO_CAL_SAMPLE_COUNT);
+            break;
+        case INS_STATE_RUNNING:
+            // 校准完成，可以打印姿态数据或零偏数据
+            // printf("RUNNING -> Roll:%.2f, Pitch:%.2f, Yaw:%.2f, G_OffsetX: %f\r\n, G_OffsetY: %f, G_OffsetZ: %f\r\n",
+            //        INS_Info.Roll_Angle, INS_Info.Pitch_Angle, INS_Info.Yaw_Angle,
+            //        BMI088_Info.Offsets_Gyro_X, BMI088_Info.Offsets_Gyro_Y, BMI088_Info.Offsets_Gyro_Z);
+            break;
+        default:
+            break;
+    }
+}
