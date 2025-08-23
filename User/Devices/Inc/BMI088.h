@@ -41,45 +41,42 @@
 #define BMI088_GYRO_250_SEN 0.00013315805450396191230191732547673f
 #define BMI088_GYRO_125_SEN 0.000066579027251980956150958662738366f
 
-typedef enum
-{
-    BMI088_NO_ERROR                     = 0x00,
-    BMI088_ACCEL_PWR_CTRL_ERROR           = 0x01,
-    BMI088_ACCEL_PWR_CONF_ERROR           = 0x02,
-    BMI088_ACCEL_CONF_ERROR               = 0x03,
-    BMI088_ACCEL_SELF_TEST_ERROR          = 0x04,
-    BMI088_ACCEL_RANGE_ERROR              = 0x05,
-    BMI088_INT1_IO_CTRL_ERROR           = 0x06,
-    BMI088_INT_MAP_DATA_ERROR           = 0x07,
-    BMI088_GYRO_RANGE_ERROR             = 0x08,
-    BMI088_GYRO_BANDWIDTH_ERROR         = 0x09,
-    BMI088_GYRO_LPM1_ERROR              = 0x0A,
-    BMI088_GYRO_CTRL_ERROR              = 0x0B,
+
+typedef enum {
+    BMI088_NO_ERROR = 0x00,
+    BMI088_ACCEL_PWR_CTRL_ERROR = 0x01,
+    BMI088_ACCEL_PWR_CONF_ERROR = 0x02,
+    BMI088_ACCEL_CONF_ERROR = 0x03,
+    BMI088_ACCEL_SELF_TEST_ERROR = 0x04,
+    BMI088_ACCEL_RANGE_ERROR = 0x05,
+    BMI088_INT1_IO_CTRL_ERROR = 0x06,
+    BMI088_INT_MAP_DATA_ERROR = 0x07,
+    BMI088_GYRO_RANGE_ERROR = 0x08,
+    BMI088_GYRO_BANDWIDTH_ERROR = 0x09,
+    BMI088_GYRO_LPM1_ERROR = 0x0A,
+    BMI088_GYRO_CTRL_ERROR = 0x0B,
     BMI088_GYRO_INT3_INT4_IO_CONF_ERROR = 0x0C,
-    BMI088_GYRO_INT3_INT4_IO_MAP_ERROR  = 0x0D,
+    BMI088_GYRO_INT3_INT4_IO_MAP_ERROR = 0x0D,
 
-    BMI088_SELF_TEST_ACCEL_ERROR        = 0x80,
-    BMI088_SELF_TEST_GYRO_ERROR         = 0x40,
-    BMI088_NO_SENSOR                    = 0xFF,
-}BMI088_Status_e;
+    BMI088_SELF_TEST_ACCEL_ERROR = 0x80,
+    BMI088_SELF_TEST_GYRO_ERROR = 0x40,
+    BMI088_NO_SENSOR = 0xFF,
+} BMI088_Status_e;
 
-typedef struct
-{
-	int16_t Accel_X;
-	int16_t Accel_Y;
-	int16_t Accel_Z;
+typedef struct {
+    int16_t Accel_X;
+    int16_t Accel_Y;
+    int16_t Accel_Z;
 
-	int16_t Gyro_X;
-	int16_t Gyro_Y;
-	int16_t Gyro_Z;
+    int16_t Gyro_X;
+    int16_t Gyro_Y;
+    int16_t Gyro_Z;
 
-	int16_t Temperature;
-
-}MPU_Info_Typedef;
+    int16_t Temperature;
+} MPU_Info_Typedef;
 
 
-typedef struct
-{
+typedef struct {
     bool Offsets_Init;
 
     float Accel[3];
@@ -91,13 +88,16 @@ typedef struct
     float Offsets_Gyro_X;
     float Offsets_Gyro_Y;
     float Offsets_Gyro_Z;
-
-}BMI088_Info_Typedef;
+} BMI088_Info_Typedef;
 
 extern BMI088_Info_Typedef BMI088_Info;
+
+extern float BMI088_GYRO_SEN;
 
 extern void BMI088_Init(void);
 
 extern void BMI088_Info_Update(BMI088_Info_Typedef *BMI088_Info);
+
+extern void BMI088_Offset_Update(BMI088_Info_Typedef *BMI088_Info);
 
 #endif //BALANCE_EBIKE_BMI088_H

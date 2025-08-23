@@ -13,7 +13,9 @@
 #include "math.h"
 
 /* General physics and mathematics constants ---------------------------------*/
-
+#ifndef M_PI
+#define M_PI (3.14159265358979323846f)
+#endif
 /**
  * @brief the value of local gravity acceleration
  */
