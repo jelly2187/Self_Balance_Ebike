@@ -4,7 +4,9 @@
 
 #include "bsp_tim.h"
 
+#include "balance_control.h"
 #include "DJI_Motor.h"
+#include "DM_Motor.h"
 #include "INS.h"
 #include "pid.h"
 #include "stm32h7xx_hal_tim.h"
@@ -23,5 +25,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
     {
         INS_Update(); // 在这里以1kHz的频率调用姿态更新
         // printf("")
+        // dm_target_position_rad = Balance_Controller_Update(INS_Info.Angle[IMU_ANGLE_INDEX_ROLL],
+        //                                         INS_Info.Gyro[IMU_GYRO_INDEX_ROLL]);
+
+        // 3. 将计算出的转向指令发送给DM8009电机
+        //    注意：这里的速度前馈v_des给0，因为我们是纯位置控制
+        // DM_Motor_Pos_Ctrl(&hfdcan2, CAN_ID, dm_target_position_rad, 0.0f);
     }
 }

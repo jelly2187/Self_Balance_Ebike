@@ -31,7 +31,7 @@ void Remote_Control_Parse(void) {
     } else if (SBUS_thoroughfare[7] == 1800) {
         System_State = false;
         System_Off();
-        printf("SYSTEM OFF!\r\n");
+        // printf("SYSTEM OFF!\r\n");
     } else {
     }
 
@@ -44,24 +44,19 @@ void Remote_Control_Parse(void) {
 
     uint16_t speed_sbus_val = SBUS_thoroughfare[3];
 
-    if (abs(speed_sbus_val - 1046) < SBUS_DEADZONE)
-    {
+    if (abs(speed_sbus_val - 1046) < SBUS_DEADZONE) {
         Set_Bicycle_Speed(0.0f);
         // float bicycle_speed = 0.0f;
         // printf("bicycle_speed=%.2f\r\n", bicycle_speed);
-
-    }
-    else
-    {
+    } else {
         // 您的范围是 1800-227，中点约976。我们假设227是最大反向速度，1800是最大正向速度
         // float bicycle_speed = map(speed_sbus_val,
         //                               254, 1800,
         //                               -15, 15);
         // Set_Bicycle_Speed(bicycle_speed);
-        if (abs(speed_sbus_val - 1046)>0) {
+        if (speed_sbus_val - 1046 > 0) {
             Set_Bicycle_Speed(-3);
-        }
-        else {
+        } else {
             Set_Bicycle_Speed(3);
         }
 
