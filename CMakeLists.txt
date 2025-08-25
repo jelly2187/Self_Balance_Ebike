@@ -50,6 +50,7 @@ file(GLOB_RECURSE SOURCES
         "User/Devices/Src/*.c"
         "User/utils/Src/*.c"
         "User/Algorithms/Src/*.c"
+        "User/Application/Src/*.c"
         #        "USER/Components/Algorithm/Src/*.c"
         #        "USER/Components/Controller/Src/*.c"
         #        "USER/Application/Task/Src/*.c"
@@ -68,6 +69,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
         User/utils/Inc
         User/BSP/Inc
         User/Algorithms/Inc
+        User/Application/Inc
 )
 
 # Add project symbols (macros)

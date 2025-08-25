@@ -69,7 +69,7 @@ void Error_Handler(void);
 #define GYRO_INT_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
-
+#define AUTO_SYSTEM_MODE 0 // 0: manual mode, 1: auto mode
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
