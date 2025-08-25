@@ -50,7 +50,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define AUTO_SYSTEM_MODE 1 // 0: manual mode, 1: auto mode
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -138,6 +138,7 @@ int main(void) {
     DM_Motor_init();
     DM_Motor_Enable(CAN_ID,POS_MODE);
     INS_Init();
+    Balance_Yu_Init();
     Balance_Controller_Init();
 
     printf("SYSTEM START!!!!!\r\n");
@@ -153,10 +154,10 @@ int main(void) {
         INS_Monitor();
 
 
-        printf("Roll: %.2f deg, Steer Cmd: %.2f deg\r\n",
-               INS_Info.Roll_Angle,
-               dm_target_position_rad * 57.3f);
-        DM_Motor_Pos_Ctrl(&hfdcan2, CAN_ID, dm_target_position_rad, 1.f); // 控制DM电机1到2 rad位置，速度1 rad/s
+        printf("Roll: %.2f deg, Roll_speed: %.2f rad/s, Steer Cmd: %.2f deg, bike_speed=%.2f m/s\r\n",
+               INS_Info.Roll_Angle, INS_Info.Gyro[IMU_GYRO_INDEX_ROLL],
+               dm_target_position_rad * 57.3f, Get_Bicycle_Speed());
+        // DM_Motor_Pos_Ctrl(&hfdcan2, CAN_ID, dm_target_position_rad, 1.f); // 控制DM电机1到2 rad位置，速度1 rad/s
 
 
         // printf("bike_speed=%.2f\r\n", Get_Bicycle_Speed());
