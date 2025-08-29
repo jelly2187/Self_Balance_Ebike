@@ -14,6 +14,9 @@ void BSP_PWM_Init(void)
 {
     //Heat_Power_Tim Start
     HAL_TIM_Base_Init(&htim3);
+    HAL_TIM_Base_Init(&htim1);
+    HAL_TIM_Base_Start(&htim1);
+    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3);
     HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 }
 //------------------------------------------------------------------------------
