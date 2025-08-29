@@ -9,6 +9,7 @@
 #include "config.h"
 #include "DJI_Motor.h"
 #include "DM_Motor.h"
+#include "XAG_Motor.h"
 
 #define SBUS_MIN_VAL        200
 #define SBUS_MID_VAL        976  // (200+1753)/2
@@ -51,32 +52,37 @@ void Remote_Control_Parse(void) {
     //                             (1.0f - RC_STEER_LPF_ALPHA) * smoothed_target_angle_rad;
     // dm_target_position_rad = smoothed_target_angle_rad;
     dm_target_position_rad = -map(SBUS_thoroughfare[0],
-                                 SBUS_MIN_VAL, SBUS_MAX_VAL,
-                                 -MAX_STEER_ANGLE_DEG * Angle_to_rad, MAX_STEER_ANGLE_DEG * Angle_to_rad);
+                                  SBUS_MIN_VAL, SBUS_MAX_VAL,
+                                  -MAX_STEER_ANGLE_DEG * Angle_to_rad, MAX_STEER_ANGLE_DEG * Angle_to_rad);
 
 #endif
+    // CH2: Bicycle Speed controlled by XAG A25
+    ESC_Set_Pulsewidth((uint16_t) map(SBUS_thoroughfare[2],
+                                      227, 1800,
+                                      MIN_PULSE_US, MAX_PULSE_US));
 
 
-    // CH3: Bicycle Speed
+    // CH3: Bicycle Speed controlled by DJI 3508
 
-    uint16_t speed_sbus_val = SBUS_thoroughfare[3];
+    // uint16_t speed_sbus_val = SBUS_thoroughfare[3];
+    //
+    // if (abs(speed_sbus_val - 1046) < SBUS_DEADZONE) {
+    //     Set_Bicycle_Speed(0.0f);
+    //     // float bicycle_speed = 0.0f;
+    //     // printf("bicycle_speed=%.2f\r\n", bicycle_speed);
+    // } else {
+    //     // 您的范围是 1800-227，中点约976。我们假设227是最大反向速度，1800是最大正向速度
+    //     // float bicycle_speed = map(speed_sbus_val,
+    //     //                               254, 1800,
+    //     //                               -15, 15);
+    //     // Set_Bicycle_Speed(bicycle_speed);
+    //     if (speed_sbus_val - 1046 > 0) {
+    //         // Set_Bicycle_Speed(-3); //3508
+    //
+    //     } else {
+    //         // Set_Bicycle_Speed(3); //3508
+    //     }
 
-    if (abs(speed_sbus_val - 1046) < SBUS_DEADZONE) {
-        Set_Bicycle_Speed(0.0f);
-        // float bicycle_speed = 0.0f;
-        // printf("bicycle_speed=%.2f\r\n", bicycle_speed);
-    } else {
-        // 您的范围是 1800-227，中点约976。我们假设227是最大反向速度，1800是最大正向速度
-        // float bicycle_speed = map(speed_sbus_val,
-        //                               254, 1800,
-        //                               -15, 15);
-        // Set_Bicycle_Speed(bicycle_speed);
-        if (speed_sbus_val - 1046 > 0) {
-            Set_Bicycle_Speed(-3);
-        } else {
-            Set_Bicycle_Speed(3);
-        }
-
-        // printf("bicycle_speed=%.2f\r\n", bicycle_speed);
-    }
+    // printf("bicycle_speed=%.2f\r\n", bicycle_speed);
 }
+
