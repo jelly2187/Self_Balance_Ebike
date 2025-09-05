@@ -4,6 +4,8 @@
 
 #include "DJI_Motor.h"
 #include <math.h>
+
+#include "Encoder.h"
 #define FRICTION_WHEEL_DIAMETER_METERS (0.063f)
 
 PID_Controller_t dji_motor_speed_pid;
@@ -45,6 +47,18 @@ void DJI_Motor_Init(void)
         Error_Handler();
     }
 
+
+    FDCAN_FilterTypeDef sFilterConfigEncoder;
+    sFilterConfigEncoder.IdType = FDCAN_STANDARD_ID;
+    sFilterConfigEncoder.FilterIndex = 1; // 使用一个新的过滤器索引，例如1
+    sFilterConfigEncoder.FilterType = FDCAN_FILTER_MASK;
+    sFilterConfigEncoder.FilterConfig = FDCAN_FILTER_TO_RXFIFO0; // 假设也路由到FIFO0
+    sFilterConfigEncoder.FilterID1 = ENCODER_FEEDBACK_CAN_ID;
+    sFilterConfigEncoder.FilterID2 = 0x7FF; // 精确匹配
+    if (HAL_FDCAN_ConfigFilter(&hfdcan1, &sFilterConfigEncoder) != HAL_OK)
+    {
+        Error_Handler();
+    }
     HAL_FDCAN_ConfigFilter(&hfdcan1, &FDCAN1_sFilterConfig);
 
     HAL_FDCAN_ConfigGlobalFilter(&hfdcan1, FDCAN_REJECT, FDCAN_REJECT, FDCAN_FILTER_REMOTE, FDCAN_FILTER_REMOTE);

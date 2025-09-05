@@ -5,6 +5,7 @@
 #include "bsp_fdcan.h"
 
 #include "DM_Motor.h"
+#include "Encoder.h"
 
 /**
   * @brief FDCAN接收FIFO0回调函数
@@ -19,8 +20,18 @@ void HAL_FDCAN_RxFifo0Callback(FDCAN_HandleTypeDef *hfdcan, uint32_t RxFifo0ITs)
         // 从接收FIFO0中获取消息
         if (hfdcan->Instance == FDCAN1) {
             if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK) {
+                // --- 判断消息来源 ---
+                if (RxHeader.Identifier >= 0x201 && RxHeader.Identifier <= 0x204)
+                {
+                    // 是DJI电机的反馈
+                    DJI_Motor_ParseFeedback(RxHeader.Identifier, RxData);
+                }
+                else if (RxHeader.Identifier == ENCODER_FEEDBACK_CAN_ID)
+                {
+                    Encoder_Parse_From_CAN(RxData);
+                }
                 // 将收到的数据交给电机解析函数处理
-                DJI_Motor_ParseFeedback(RxHeader.Identifier, RxData);
+                // DJI_Motor_ParseFeedback(RxHeader.Identifier, RxData);
             }
         }
         // else if (hfdcan->Instance == FDCAN2) {

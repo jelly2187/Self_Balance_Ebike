@@ -156,7 +156,7 @@ int main(void)
         Remote_Control_Parse();
         INS_Monitor();
 
-        printf("pwm pulse set: %.2f us\r\n", xag_motor_pwm);
+        // printf("pwm pulse set: %.2f us\r\n", xag_motor_pwm);
         // printf("Roll: %.2f deg, Roll_speed: %.2f rad/s, Steer Cmd: %.2f deg, bike_speed=%.2f m/s\r\n",
         //        INS_Info.Roll_Angle, INS_Info.Gyro[IMU_GYRO_INDEX_ROLL],
         //        dm_target_position_rad * 57.3f, Get_Bicycle_Speed());
